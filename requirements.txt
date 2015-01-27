@@ -1,0 +1,4 @@
+beautifulsoup4==(4.3.2)?
+requests==(2.5.1)?
+ConfigParseur==(?)?
+PIL or Pillow=()?
