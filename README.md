@@ -2,11 +2,13 @@
 
 EasyM est une librairie pyhtin qui à pour but de regroupé plusieur objectif:
 
-- Aspirateur web, perrmettant de regrouper les informations de la plus part des
-  manga du moments, venant ed plusieurs souces diffèreentes.
+- Aspirateur web, permetant de regrouper les informations présent sur le net
+    des mangas existant (En cours, Terminer, Oneshot). De pouvoir ajouté des
+    sources en donnant un minimu d'information.
 
-- Proposé à l'utilisateur en fonction des mangas demandé des thèmes similaire.
+- Proposé a l'utilisateur des mangas en fonction de ses goûts, par rapport à se
+  qu'il à dejà lu.
 
-- Permettre de ddl les chapitres de les sauvegardé
+- Permettre de ddl les chapitres voulue et de les stocker.
 
-- Permettre de crée de epub avec les chapitres voulue.
+- Permettre de créer de epub avec les chapitres voulue.
