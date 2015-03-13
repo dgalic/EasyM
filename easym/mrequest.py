@@ -1,3 +1,5 @@
+#!/usr/bin/env python2.7
+# -*- coding: UTF-8 -*-
 """
     Le module Mrequest s'occupe d'effectuer le requete http demander
     et de filtrer avec les selecteur fournie et de renvoyer le résultat
@@ -11,25 +13,21 @@ from time import sleep
 from unidecode import unidecode
 
 # constants
-TYPE_TEXT           = 'text'
-TYPE_TABLE          = 'table'
-TYPE_ATTRS          = 'attrs'
-
 # exception classes
 # interface functions
-def encodeUTF8(elt):
-    return elt.encode("utf-8")
 # classes
 # internal functions & classes
+def encodeUTF8(elt):
+    return elt.encode("utf-8")
 
-def Request(object):
+class MRequest(object):
 
-    def __init__(self):
+    def __init__(self, trequest = 0.5):
         """ Information d'initalisation ?
              - Problème comment limiter ne nombre de requete
         """
         self.request = None
-        self.printer = False
+        self.time_request = trequest
 
     def getRequest(self, url):
         """
@@ -41,7 +39,7 @@ def Request(object):
         """
         # TODO : voir a amélioré la gestion des erreurs
         try :
-            self.request = requests.get(url, timeout=TIME_REQUEST)
+            self.request = requests.get(url, timeout=self.time_request)
         except requests.exceptions.Timeout:
             print "Erreur : Timeout request"
             return False
@@ -55,11 +53,11 @@ def Request(object):
         if not self.request.encoding == 'utf-8':
             self.request.encoding = 'utf-8'
 
-        if self.printer:
-            printRequest()
         return True
 
-    def printRequest(self):
+    def __str__(self):
+        if  not self.request:
+            return "Not request are ask"
         page = self.request
         history = "{"
         for a in page.history:
@@ -67,18 +65,12 @@ def Request(object):
         history = history + " }"
 
         ## Information on request
-        info = u""" Url : %s\n Status : %s\n Redirection : %s\n Endoding : %s
-                """ % (page.url, page.status_code, history, page.encoding)
-        print encodeUTF8(info)
+        info = u"""
+ Url : %s
+ Status : %s
+ Redirection : %s
+ Endoding : %s
+ """ % (page.url, page.status_code, history, page.encoding)
+        return encodeUTF8(info)
 
-    def filtrerequest(self , response, selecteur):
-        """ Ce charge de filtrer la requete et renvoie un dico
-            avec les sélecteur voulue ou None.
-            Peut-on savoir le format des selecteur ?
-        """
-        pass
-
-
-if __name__ == '__main__':
-    sys.exit(0)
-
+#if __name__ == '__main__':
