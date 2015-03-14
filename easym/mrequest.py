@@ -34,20 +34,17 @@ class Mrequest(object):
             self.request = requests.get(url, timeout=self.time_request)
         except requests.exceptions.Timeout:
             print "Erreur : Timeout request"
-            return False
+            return None
         except requests.exceptions.ConnectionError:
             print "Erreur : ConnexionError request"
-            return False
+            return None
 
         if not self.request.status_code == requests.codes.ok:
-            return False
+            return None
 
         if not self.request.encoding == 'utf-8':
             self.request.encoding = 'utf-8'
 
-        return True
-
-    def getpage(self):
         return self.request
 
     def __str__(self):
