@@ -7,22 +7,14 @@
 """
 # imports
 import requests
-from bs4 import BeautifulSoup
-from random import randint
-from time import sleep
-from unidecode import unidecode
+from mconstant import *
 
-# constants
-# exception classes
-# interface functions
-# classes
-# internal functions & classes
 def encodeUTF8(elt):
     return elt.encode("utf-8")
 
-class MRequest(object):
+class Mrequest(object):
 
-    def __init__(self, trequest = 0.5):
+    def __init__(self, trequest = TIME_REQUEST):
         """ Information d'initalisation ?
              - Problème comment limiter ne nombre de requete
         """
@@ -37,7 +29,7 @@ class MRequest(object):
                 - ConnexionError
             Renvoie les données reencodé en utf-8
         """
-        # TODO : voir a amélioré la gestion des erreurs
+        # TODO : amélioré la gestion d'erreur
         try :
             self.request = requests.get(url, timeout=self.time_request)
         except requests.exceptions.Timeout:
@@ -54,6 +46,9 @@ class MRequest(object):
             self.request.encoding = 'utf-8'
 
         return True
+
+    def getpage(self):
+        return self.request
 
     def __str__(self):
         if  not self.request:
