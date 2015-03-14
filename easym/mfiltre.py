@@ -1,58 +1,50 @@
-
 #!/usr/bin/env python2.7
 # -*- coding: UTF-8 -*-
 """
-    Le module MFiltre s'occupe de filtrée les données pour 2 cas dans EasyM
-    - Pour chercher les Titre
-        des mangas et leurs lien vers les informations concernant
-    - Pour chercher le Contenu
+    Le module correspond à un filtre pour chaque site web
+    - Pour chercher les Titres
+        des mangas et leurs lien vers les informations les concernant
+    - Pour chercher leurs Contenus
         des mangas selon une structure précise
 """
 # imports
-import requests
 from bs4 import BeautifulSoup
-from random import randint
-from time import sleep
-from unidecode import unidecode
+from mconstant import *
 
-# constants
-MNAME   = 'name'
-MID     = 'id'
-INFO    = 'information'
+class Mfiltre(object):
 
-TYPE_TEXT           = 'text'
-TYPE_TABLE          = 'table'
-TYPE_ATTRS          = 'attrs'
-# exception classes
-# interface functions
-# classes
-# internal functions & classes
-def encodeUTF8(elt):
-    return elt.encode("utf-8")
-
-class MFiltre(object):
-
-    def __init__(self):
+    def __init__(self, url, url_title, url_content):
         """ Information d'initalisation ?
         """
-        pass
+        self.url = url
+        self.base_url_title = url_title
+        self.base_url_content = url_content
+
+    def initTitle(self, selecteur, field, url_prefix=""):
+        self.selecteur = selecteur
+        self.field = field
+        self.url_prefix = url_prefix
+
+    def initContent(self, fieldload, filtre="*"):
+        self.fieldload = fieldload
+        self.filtre = filtre
 
     def getTitleContent(mpage):
             ## catch name and identifier
-            name = m.text
-            url = m.attrs[self.field]
-            result = re.match(url_cut + "(.*)/", url)
+            name = mpage.text
+            url = mpage.attrs[self.field]
+            result = re.match(self.url_prefix + "(.*)/", url)
             mid = result.group(1)
             return (name, mid)
 
-    def getTitle(self, content, selecteur, field, url_cut):
+    def getMTitle(self, content):
+        """ retourne une liste d'element (titre, web site id, info -> vide) """
         soup = BeautifulSoup(content.text)
 
         ## keep only inforamtion necessary information with selecteur
-        titles = soup.select(selecteur)
+        titles = soup.select(self.selecteur)
 
         lmanga = []
-        self.field = field
         ## catch Titles information in website
         for m in titles:
             (name, mid) = self.getTitleContent(m)
@@ -73,24 +65,29 @@ class MFiltre(object):
     def getText(page, select):
         return page.select(select)[0].text
 
-    def getContentM(content, field_load, filtre="*"):
+    def getMContent(content):
+        """
+        Pour le contenu d'un page principale d'un manga
+        Le remplie dans un dictionnaire qui correspont
+        au champ INFO de la librairy
+        """
         soup = BeautifulSoup(content.text)
 
         # Filtre possible pour travailler sur un ensemble plus petit
-        page = soup.select(filtre)[0]
+        page = soup.select(self.filtre)[0]
 
         dico = {}
-        for elt in field_load:
+        for elt in self.fieldload:
             if elt[0] == TYPE_TEXT:
-                text = getText(page, elt[1])
+                text = self.getText(page, elt[1])
                 dico[elt[2]] = text
 
             if elt[0] == TYPE_ATTRS:
-                attr = getEltAttrs(page, elt[1], elt[2])
+                attr = self.getEltAttrs(page, elt[1], elt[2])
                 dico[elt[3]] = attr
 
             if elt[0] == TYPE_TABLE:
-                table = getTableContent(page, elt[1], elt[2])
+                table = self.getTableContent(page, elt[1], elt[2])
                 dico.update(table)
 
         return dico
