@@ -8,15 +8,23 @@
         des mangas selon une structure précise
 """
 # imports
+import re
 from bs4 import BeautifulSoup
 from mconstant import *
+from mrequest import Mrequest as mreq
+
+def encodeUTF8(elt):
+    return elt.encode("utf-8")
 
 class Mfiltre(object):
 
-    def __init__(self, url, url_title, url_content):
+    def __init__(self, url):
         """ Information d'initalisation ?
         """
         self.url = url
+        self.mreq = mreq()
+
+    def initUrl(self, url_title, url_content):
         self.base_url_title = url_title
         self.base_url_content = url_content
 
@@ -29,7 +37,7 @@ class Mfiltre(object):
         self.fieldload = fieldload
         self.filtre = filtre
 
-    def getTitleContent(mpage):
+    def getTitleContent(self, mpage):
             ## catch name and identifier
             name = mpage.text
             url = mpage.attrs[self.field]
@@ -40,7 +48,6 @@ class Mfiltre(object):
     def getMTitle(self, content):
         """ retourne une liste d'element (titre, web site id, info -> vide) """
         soup = BeautifulSoup(content.text)
-
         ## keep only inforamtion necessary information with selecteur
         titles = soup.select(self.selecteur)
 
@@ -48,33 +55,46 @@ class Mfiltre(object):
         ## catch Titles information in website
         for m in titles:
             (name, mid) = self.getTitleContent(m)
-            lmanga.append({MNAME: name , MID : id_manga , INFO : None})
+            lmanga.append({MNAME: name , MID : mid , MINFO : None})
 
         return lmanga
 
-    def getTableContent(page, select, field):
+    def getTableContent(self, page, select, field):
         info = page.select(select)
 
         ligne = [i.text for i in info]
         dico = { v:ligne[k] for k,v in field.items()}
         return dico
 
-    def getEltAttrs(page, select, field):
-        return page.select(select)[0].attrs[field]
+    def getEltAttrs(self, page, select, field):
+        try:
+            ret = page.select(select)[0].attrs[field]
+        except IndexError:
+            return None
+        return ret
 
-    def getText(page, select):
-        return page.select(select)[0].text
 
-    def getMContent(content):
+    def getText(self, page, select):
+        try:
+            ret = page.select(select)[0].text
+        except IndexError:
+            return None
+        return ret
+
+    def getMContent(self, content):
         """
         Pour le contenu d'un page principale d'un manga
         Le remplie dans un dictionnaire qui correspont
-        au champ INFO de la librairy
+        au champ MINFO de la librairy
         """
         soup = BeautifulSoup(content.text)
 
         # Filtre possible pour travailler sur un ensemble plus petit
-        page = soup.select(self.filtre)[0]
+        try:
+            page = soup.select(self.filtre)[0]
+        except IndexError:
+            print soup
+            print self.filtre
 
         dico = {}
         for elt in self.fieldload:
@@ -91,3 +111,37 @@ class Mfiltre(object):
                 dico.update(table)
 
         return dico
+
+
+    def titles(self):
+        page = self.mreq.getRequest(self.base_url_title)
+        if not page:
+            return None
+
+        return self.getMTitle(page)
+
+    def mcontent(self, mid):
+        url = self.base_url_content + mid +'/'
+        page = self.mreq.getRequest(url)
+        if not page:
+            return None
+
+        print self.mreq
+
+        return self.getMContent(page)
+
+    def __str__(self):
+        ## Information on request
+        info = u"""
+ Url : %s
+ Title : %s
+    selecteur : %s
+    field     : %s
+ Content      : %s
+    filtre    : %s
+    Field Load:
+       %s
+ """ % (self.url, self.base_url_title, self.selecteur, self.field,
+         self.base_url_content, self.filtre, self.fieldload )
+        return encodeUTF8(info)
+
