@@ -7,29 +7,15 @@
 from mrequest import Mrequest as mreqq
 from mfiltre import Mfiltre as mfilt
 from mlib import Mlib as mlib
+from mconfig import *
 from mconstant import *
 
 # constants
-URL_LE = 'http://www.lecture-en-ligne.com'
-URL_JS = 'http://www.japscan.com'
 
-# Field to constant infroamtion in web site
-
+# Field to constant information in web site
 ## LECTURE EN LIGNE
-### constant
-TITLE_PAGE_LE       = URL_LE
-CONTENT_PAGE_LE     = URL_LE + '/manga/'
-URL_CUT_LE          = CONTENT_PAGE_LE
-
-### selecteur CSS
-#### TITLE
-SELECT_TITLE_LE         = 'optgroup option'
-FIELD_TITLE_LE          = 'value'
+URL_LE = 'http://www.lecture-en-ligne.com'
 #### CONTENT
-SELECT_IMG_LE           = '.imagemanga'
-SELECT_RESUME_LE        = '#resume p + p'
-SELECT_TABLE_LE         = '.infos tbody tr td'
-FILTRE_LE               = '#page'
 LOAD_LE                 =  {
         0 : SCND_NAME, 1 : PARUTION , 2 : STATUS   ,
         3 : AUTHOR   , 4 : DRAWER   , 5 : FR_EDIT  ,
@@ -37,33 +23,48 @@ LOAD_LE                 =  {
         9 : CLASSMENT, 11 : NOTE    }
 
 CONTENT_LOAD_LE         = [
-        [TYPE_TABLE, SELECT_TABLE_LE, LOAD_LE],
-        [TYPE_ATTRS, SELECT_IMG_LE, "src", IMG_URL],
-        [TYPE_TEXT, SELECT_RESUME_LE, RESUME]
+        [TYPE_TABLE , '.infos tbody tr td'  , LOAD_LE],
+        [TYPE_ATTRS , ('.imagemanga','src') , IMG_URL],
+        [TYPE_TEXT  , '#resume p + p'       , RESUME]
         ]
 
+DICO_LE ={
+        URL_TITLE       : URL_LE,
+        URL_CONTENT     : URL_LE + '/manga/',
+        URL_CUT         : URL_LE + '/manga/',
+        TITLE_SELECT    : 'optgroup option',
+        TITLE_FIELD     : 'value',
+        CONTENT_SELECT  : CONTENT_LOAD_LE,
+        CONTENT_FILTRE  : '#page',
+        }
+
 ## JAPSCAN
-### constant
-TITLE_PAGE_JS      = URL_JS + '/mangas/'
-CONTENT_PAGE_JS    = URL_JS + '/mangas/'
-URL_CUT_JS      = '/mangas'
-
-### selecteur css
-#### TITLE
-SELECT_TITLE_JS         = '#liste_mangas .row .cell a[href^="/mangas/"]'
-FIELD_TITLE_JS          = 'href'
-
-### CONTENT PRIMARY PAGE
-SELECT_RESUME_JS        = '#synopsis'
-SELECT_TABLE_JS         = '.table .row .cell'
-FILTRE_JS               = '.content'
+URL_JS = 'http://www.japscan.com'
+#### CONTENT
 LOAD_JS                 =  {
         0 : AUTHOR, 1 : SCND_NAME , 2 : PARUTION   ,
         3 : GENRE   , 4 : TEAM , 5 : STATUS  }
 CONTENT_LOAD_JS         = [
-        [TYPE_TABLE, SELECT_TABLE_JS, LOAD_JS],
-        [TYPE_TEXT, SELECT_RESUME_JS, RESUME]
-        ]
+        [TYPE_TABLE , '#synopsis'           , LOAD_JS],
+        [TYPE_TEXT  , '.table .row .cell'   , RESUME ]]
+
+DICO_JS ={
+        URL_TITLE       : URL_JS + '/mangas/',
+        URL_CONTENT     : URL_JS + '/mangas/',
+        URL_CUT         : '/manga/',
+        TITLE_SELECT    : '#liste_mangas .row .cell a[href^="/mangas/"]',
+        TITLE_FIELD     : 'href',
+        CONTENT_SELECT  : CONTENT_LOAD_JS,
+        CONTENT_FILTRE  : '.content',
+        }
+class EasyM(object):
+
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        pass
+
 
 def FLE():
     mf = mfilt(URL_LE)
