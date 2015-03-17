@@ -66,20 +66,26 @@ class Mfiltre(object):
         dico = { v:ligne[k] for k,v in field.items()}
         return dico
 
-    def getEltAttrs(self, page, select, field):
+    def selectElt(self, filtre):
         try:
-            ret = page.select(select)[0].attrs[field]
-        except IndexError:
+            ret = page.select(filtre)[0]
+        except IndexError: # erreurs aucun élement selectionné
             return None
         return ret
+
+
+    def getEltAttrs(self, page, select, field):
+        EltFiltre = self.select(select)
+        if not pageFiltre:
+            return None
+        return EltFiltre.attrs[field]
 
 
     def getText(self, page, select):
-        try:
-            ret = page.select(select)[0].text
-        except IndexError:
+        pageFiltre = self.select(select)
+        if not pageFiltre:
             return None
-        return ret
+        return pageFiltre.text
 
     def getMContent(self, content):
         """
@@ -90,11 +96,10 @@ class Mfiltre(object):
         soup = BeautifulSoup(content.text)
 
         # Filtre possible pour travailler sur un ensemble plus petit
-        try:
-            page = soup.select(self.filtre)[0]
-        except IndexError:
-            print soup
-            print self.filtre
+        pageFiltre = self.select(select)
+        if not pageFiltre:
+            return None
+        page = pageFiltre
 
         dico = {}
         for elt in self.fieldload:
@@ -103,15 +108,15 @@ class Mfiltre(object):
                 dico[elt[2]] = text
 
             if elt[0] == TYPE_ATTRS:
-                attr = self.getEltAttrs(page, elt[1], elt[2])
-                dico[elt[3]] = attr
+                (s,f) = elt[1]
+                attr = self.getEltAttrs(page, s, f)
+                dico[elt[2]] = attr
 
             if elt[0] == TYPE_TABLE:
                 table = self.getTableContent(page, elt[1], elt[2])
                 dico.update(table)
 
         return dico
-
 
     def titles(self):
         page = self.mreq.getRequest(self.base_url_title)
@@ -126,12 +131,10 @@ class Mfiltre(object):
         if not page:
             return None
 
-        print self.mreq
-
         return self.getMContent(page)
 
     def __str__(self):
-        ## Information on request
+        ## Information on filtre web site
         info = u"""
  Url : %s
  Title : %s
