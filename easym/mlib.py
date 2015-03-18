@@ -2,8 +2,8 @@
 # -*- coding: UTF-8 -*-
 
 """
-    Le module s'occupe de sauvegarder les données collecter par Easym
-    Et le gestion dans la LibrairieEasyM
+    Le module s'occupe de sauvegarder les données collecter par EasyM
+    Et la gestion de ces données LibrairieEasyM
 """
 
 # imports
@@ -22,9 +22,7 @@ def formatName(name):
 class Mlib(object):
 
     def __init__(self):
-        """ Information d'initalisation ?
-            - charge la librairy ou la crée vide
-        """
+        self.Mlib = {}
         self.initLib()
 
     def initLib(self):
@@ -35,31 +33,50 @@ class Mlib(object):
     def loadLib(self):
         try:
             f = open(EASY_LIBRARY, "r")
-            sef.lib = eval(f.read())
+            sef.Mlib = eval(f.read())
             f.close()
         except IOError:
-            self.lib = {}
             return False
         return True
 
     def saveLib(self):
         try:
            f = open(EASY_LIBRARY, "w")
-           f.write(str(self.lib))
+           f.write(str(self.Mlib))
            f.close()
         except IOError:
             return False
         return True
+
+    def getIdMangas(self):
+        return self.lib.keys()
+
+    def getIdMToUpdate(self):
+        """ we look for all manga id if we miss:
+            - information in value MINFO
+            - field in MINFO : to return change code in website
+        """
+        update = []
+        for mid, info in self.Mlib():
+            for website in info.keys():
+                if not info[website][INFO]:
+                    update.append((mid,website))
+                else:
+                    for field in info[website][INFO].keys():
+                        if not info[website][INFO][field]:
+                            update.append((mid,website,field))
+
+        return update
 
     def addMliste(mliste, site):
         self.duplicate = []
         self.update = []
         for m in mliste:
             keyname = formatName(m[MNAME])
-            if keyname in lib:
-                if not site in lib[keyname]:
+            if keyname in self.Mlib:
+                if not site in self.Mlib[keyname]:
                     print keyname
-                    lib[keyname][site] = m
+                    self.Mlib[keyname][site] = m
                 else:
                     # TODO dans le cas d'update les données
                     self.duplicate.append(m[MNAME])
@@ -70,9 +87,6 @@ class Mlib(object):
 
     def __str__(self):
         nbM = len(self.lib)
-        nbErr = len(self.errors)
-        nbDup = len(self.errors)
-        nbUpdate = len(self.errors)
         ## Information on Lib
         info = u"""
  Nombre de manga : %d
