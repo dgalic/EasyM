@@ -21,20 +21,14 @@ TITLE_FIELD     = 'title_field'
 CONTENT_SELECT  = 'content_allselect'
 CONTENT_FILTRE  = 'content_filtre'
 ALLFIELD_NECESSITY = [
-        URL_TITLE, URL_CONTENT, URL_CUT,
+        URL_TITLE, URL_CONTENT,
         TITLE_SELECT,TITLE_FIELD,
-        CONTENT_SELECT, CONTENT_FILTRE]
+        CONTENT_SELECT]
 
 class Mconfig(object):
     """
         La classe s'occupe d'un fichier CONFIG_FILE , se charge de le
         crée s'il n'existe pas, chaque section du fichier correspond à un site.
-        Ce module effectue l'étape :
-            - lire le fichier CONFIG_FILE avec module ConfigParser
-            - traduire en un dictionnaire  clé section value :dico
-                (clé : POSITION ;value: SELECTEUR)
-            CONFIG_FILE -> DICO Sélecteur
-        Si vide renvoie NONE
     """
 
     def __init__(self):
@@ -56,6 +50,9 @@ class Mconfig(object):
         except IOError:
             return False
         return True
+
+    def websites(self):
+        return self.mconfig.sections()
 
     def isMfiltre(self, name, content):
         if name in self.mconfig.sections():
@@ -85,7 +82,6 @@ class Mconfig(object):
             if not typ in [TYPE_ATTRS, TYPE_TEXT, TYPE_TABLE]:
                 print 'Type %s not exist' % (typ)
                 return False
-
             # check length
             length = len(elt)
             field_test = []
@@ -108,17 +104,45 @@ class Mconfig(object):
 
     # add a new web site ; name = URL content=dico(option,field)
     def addSection(self, name, content):
-        if self.testNewSection(name, content):
-            pass
-        else:
-            pass
+        if self.isMfiltre(name, content):
+            self.mconfig.add_section(name)
+            for option,value in content.keys():
+                self.mconfig.set(name, option, value)
+            return self.saveConfig()
+        return False
 
     def createFiltre(self, name):
         filtre = mfiltre(name)
         #Constant url
-        url_title = self.mconfig.get(name, )
+        url_title = self.mconfig.get(name, URL_TITLE)
+        url_content = self.mconfig.get(name, URL_CONTENT)
+        filtre.initUrl(url_title, url_content)
         #Constant title
+        title_select = self.mconfig.get(name, TITLE_SELECT)
+        title_field = self.mconfig.get(name, TITLE_FIELD)
+        if self.mconfig.has_option(URL_CUT):
+            url_cut = self.mconfig.get(name, URL_CUT)
+            filtre.initTitle(title_select, title_field, url_cut)
+        else:
+            filtre.initTitle(title_select, title_field)
         #Constant content
-        pass
+        content_select = self.mconfig.get(name, CONTENT_SELECT)
+        if self.mconfig.has_option(CONTENT_FILTRE):
+            content_filtre = self.mconfig.get(name, CONTENT_FILTRE)
+            filtre.initContent(content_select, content_filtre)
+        else:
+            filtre.initContent(content_select)
 
-# if __name__ == '__main__':
+    def __str__(self):
+        website = self.mconfig.sections()
+        web_site_str = ""
+        for elt in self.website:
+            web_site_str += "%s\n       " % (elt)
+        ## Information on filtre web site
+        info = u"""
+ Nombre de site web : %d
+ Site web :
+        %s
+ """ % (len(website), web_site_str)
+        return encodeUTF8(info)
+
