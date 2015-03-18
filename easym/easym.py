@@ -11,6 +11,8 @@ from mconfig import *
 from mconstant import *
 
 # constants
+ERRTITLE    = 'title'
+ERRCONTENT  = 'content'
 
 # Field to constant information in web site
 ## LECTURE EN LIGNE
@@ -79,12 +81,12 @@ class EasyM(object):
         url = self.Efilt[name].getUrlTitle()
         page = self.Ereq.getRequest(url)
         if not page:
-            self.ErrReq.append((name,url))
+            self.ErrReq.append((name,url,ERRTITLE))
             return None
 
         mtitles = self.Efilt[name].mTitle(page)
         if not mtitles:
-            self.ErrFiltre.append((name,url,'title'))
+            self.ErrFiltre.append((name,url,ERRTITLE))
 
         return mtitles
 
@@ -92,7 +94,7 @@ class EasyM(object):
         url = self.Efilt[name].getUrlContent() + mid + '/'
         page = self.mreq.getRequest(url)
         if not page:
-            self.ErrReq.append((name,url))
+            self.ErrReq.append((name,url,ERRCONTENT))
             return None
 
         mcontent = self.Efilt[name].mContent(page)
@@ -104,21 +106,6 @@ class EasyM(object):
     def __str__(self):
         print self.elibrairy
 
-
-
-def loadfiltre(filtre):
-    mtitles = filtre.titles()
-    if not mtitles:
-        print "Les titres non chargé"
-
-    print "Nombre de Titre : %d" % (len(title))
-    badformat = 0
-    for i in title:
-        if not(MNAME in i and  MID in i and MINFO in i):
-            badformat+=1
-
-    print "M mal formé : %d" %(badformat)
-    return titres
 
 def loadAllfiltre(filtres):
     FTitres = []
