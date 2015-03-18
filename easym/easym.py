@@ -61,10 +61,48 @@ DICO_JS ={
 class EasyM(object):
 
     def __init__(self):
+        self.Ereq = Mrequest()
+        self.Econf = Mconfig()
+        self.Efilt = {}
+        self.Elib = Mlib()
+        self.ErrReq = []
+        self.ErrFiltre = []
         pass
 
+    def initFiltre(self):
+        filtre = self.Econf.websites()
+        if filtre:
+            for elt in filtres:
+                self.Efilt[name] = self.Econf.createFiltre(elt)
+
+    def titles(self, name):
+        url = self.Efilt[name].getUrlTitle()
+        page = self.Ereq.getRequest(url)
+        if not page:
+            self.ErrReq.append((name,url))
+            return None
+
+        mtitles = self.Efilt[name].mTitle(page)
+        if not mtitles:
+            self.ErrFiltre.append((name,url,'title'))
+
+        return mtitles
+
+    def mcontent(self, name, mid):
+        url = self.Efilt[name].getUrlContent() + mid + '/'
+        page = self.mreq.getRequest(url)
+        if not page:
+            self.ErrReq.append((name,url))
+            return None
+
+        mcontent = self.Efilt[name].mContent(page)
+        if not mcontent:
+            self.ErrFiltre.append((name,url,mid))
+
+        return mcontent
+
     def __str__(self):
-        pass
+        print self.elibrairy
 
 
 
@@ -113,12 +151,5 @@ def loadAllfiltre(filtres):
         idm+=1
     return (titlesLE, error)
 
-def main():
-    mreq = mreq()
 
-    mfle =FLE()
-    mfjs =FJS()
-
-if __name__ == '__main__':
-    main()
-
+#if __name__ == '__main__':
