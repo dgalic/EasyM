@@ -12,10 +12,19 @@ import re
 from bs4 import BeautifulSoup
 from mconstant import *
 
+#constant
+ERR_TITLE       = 'tilte'
+ERR_CONTENT     = 'content'
+ERR_POS_FILTRE  = 'filtre'
+ERR_POS_TEXT    = 'text'
+ERR_POS_ATTRS   = 'attrs'
+ERR_POS_TABLE   = 'table'
+
 class Mfiltre(object):
 
     def __init__(self, url):
         self.url = url
+        self.errors = []
 
     def initUrl(self, url_title, url_content):
         self.base_url_title = url_title
@@ -48,7 +57,11 @@ class Mfiltre(object):
         """ retourne une liste d'element (titre, web site id, info -> none) """
         soup = BeautifulSoup(content.text)
         ## keep only inforamtion necessary information with selecteur
-        titles = soup.select(self.selecteur)
+        pageFiltre = self.select(self.selecteur)
+        if not pageFiltre:
+            self.errors.apprend((ERR_TITLE, ERR_POS_FILTRE))
+            return None
+        titles = pageFiltre
 
         lmanga = []
         ## catch Titles information in website
@@ -66,21 +79,32 @@ class Mfiltre(object):
         return ret
 
     def mTableContent(self, page, select, field):
-        info = page.select(select)
+        EltFiltre = self.select(select)
+        if not pageFiltre:
+            self.errors.apprend((ERR_CONTENT, ERR_POS_TABLE))
+            return None
 
-        ligne = [i.text for i in info]
-        dico = { v:ligne[k] for k,v in field.items()}
+        ligne = [i.text for i in EltFiltre]
+        length = len(ligne)
+        for position, field_librairy in field.items():
+            value = None
+            if position < length:
+                value = ligne[position]
+            dico[field_librairy] = value
+
         return dico
 
     def mEltAttrs(self, page, select, field):
         EltFiltre = self.select(select)
         if not pageFiltre:
+            self.errors.apprend((ERR_CONTENT, ERR_POS_ATTRS))
             return None
         return EltFiltre.attrs[field]
 
     def mText(self, page, select):
         pageFiltre = self.select(select)
         if not pageFiltre:
+            self.errors.apprend((ERR_CONTENT, ERR_POS_TEXT))
             return None
         return pageFiltre.text
 
@@ -95,6 +119,7 @@ class Mfiltre(object):
         # Filtre possible pour travailler sur un ensemble plus petit
         pageFiltre = self.select(select)
         if not pageFiltre:
+            self.errors.apprend((ERR_CONTENT, ERR_POS_FILTRE))
             return None
         page = pageFiltre
 
@@ -119,17 +144,21 @@ class Mfiltre(object):
         fieldload = ""
         for elt in self.fieldload:
             fieldload += "%s\n       " % (elt)
+
         ## Information on filtre web site
         info = u"""
  Url : %s
  Title : %s
-    selecteur : %s
-    field     : %s
- Content      : %s
-    filtre    : %s
+    Selecteur : %s
+    Field     : %s
+ Content : %s
+    Filtre    : %s
     Field Load:
         %s
+ Error : %d
+
  """ % (self.url, self.base_url_title, self.selecteur, self.field,
-         self.base_url_content, self.filtre, fieldload )
+         self.base_url_content, self.filtre, fieldload,
+         len(self.errors), str(self.errors))
         return encodeUTF8(info)
 
