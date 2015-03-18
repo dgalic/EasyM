@@ -57,6 +57,7 @@ DICO_JS ={
         CONTENT_SELECT  : CONTENT_LOAD_JS,
         CONTENT_FILTRE  : '.content',
         }
+
 class EasyM(object):
 
     def __init__(self):
@@ -66,31 +67,6 @@ class EasyM(object):
         pass
 
 
-def FLE():
-    mf = mfilt(URL_LE)
-    mf.initTitle(SELECT_TITLE_LE, FIELD_TITLE_LE, URL_CUT_LE)
-    mf.initContent(CONTENT_LOAD_LE, FILTRE_LE)
-    mf.initUrl(TITLE_PAGE_LE, CONTENT_PAGE_LE)
-    return mf
-
-def FJS():
-    mf = mfilt(URL_JS)
-    mf.initTitle(SELECT_TITLE_JS, FIELD_TITLE_JS, URL_CUT_JS)
-    mf.initContent(CONTENT_LOAD_JS, FILTRE_JS)
-    mf.initUrl(TITLE_PAGE_JS, CONTENT_PAGE_JS)
-    return mf
-
-def test():
-    j = FLE()
-    l = FJS()
-    tj = j.titles()
-    tl = l.titles()
-    print "taille : %d" % (len(tj))
-    print "taille : %d" % (len(tl))
-    print j
-    print j.mcontent(tj[5]['id'])
-    print l
-    print l.mcontent(tl[5]['id'])
 
 def loadfiltre(filtre):
     mtitles = filtre.titles()
