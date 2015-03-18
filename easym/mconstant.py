@@ -44,3 +44,7 @@ ALLFIELD_MINFO = [  STATUS, AUTHOR, DRAWER, GENRE,
                     RESUME, IMG_URL, SCND_NAME,
                     PARUTION, FR_EDIT, TEAM,
                     READ, CLASSMENT, NOTE]
+
+def encodeUTF8(elt):
+    return elt.encode("utf-8")
+

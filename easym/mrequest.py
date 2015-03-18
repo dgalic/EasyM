@@ -9,9 +9,6 @@
 import requests
 from mconstant import *
 
-def encodeUTF8(elt):
-    return elt.encode("utf-8")
-
 class Mrequest(object):
 
     def __init__(self, trequest = TIME_REQUEST):

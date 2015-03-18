@@ -13,9 +13,6 @@ from bs4 import BeautifulSoup
 from mconstant import *
 from mrequest import Mrequest as mreq
 
-def encodeUTF8(elt):
-    return elt.encode("utf-8")
-
 class Mfiltre(object):
 
     def __init__(self, url):
@@ -134,6 +131,9 @@ class Mfiltre(object):
         return self.getMContent(page)
 
     def __str__(self):
+        fieldload = ""
+        for elt in self.fieldload:
+            fieldload += "%s\n       " % (elt)
         ## Information on filtre web site
         info = u"""
  Url : %s
@@ -143,8 +143,8 @@ class Mfiltre(object):
  Content      : %s
     filtre    : %s
     Field Load:
-       %s
+        %s
  """ % (self.url, self.base_url_title, self.selecteur, self.field,
-         self.base_url_content, self.filtre, self.fieldload )
+         self.base_url_content, self.filtre, fieldload )
         return encodeUTF8(info)
 
