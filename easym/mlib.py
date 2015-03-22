@@ -19,13 +19,15 @@ EASY_LIBRARY        = 'libEasyM.txt'
 def formatName(name):
     """ formate le nom du manga à être un identifiant unique """
     name = unidecode(name).lower().replace(" ","")
-    name = re.sub(r'[-+/\',.:?&#]'  , "", name)
+    name = re.sub(r'[-+/\',.:?&%#]'  , "", name)
     return name
 
 class Mlib(object):
 
     def __init__(self):
         self.Mlib = {}
+        self.duplicates = []
+        self.updates = []
         self.initLib()
 
     def initLib(self):
@@ -56,7 +58,10 @@ class Mlib(object):
         return True
 
     def getIdMangas(self):
-        return self.lib.keys()
+        return self.Mlib.keys()
+
+    def getMIdManga(self, mid, website):
+        return self.Mlib[mid][website][MID]
 
     def getIdMToUpdate(self):
         """ we look for all manga id if we miss:
@@ -66,12 +71,17 @@ class Mlib(object):
         update = []
         for mid, info in self.Mlib.items():
             for website in info.keys():
-                if info[website][INFO]:
-                    for field in info[website][INFO].keys():
-                        if not info[website][INFO][field]:
-                            update.append((mid,website,field))
+                if info[website][MINFO]:
+                    fieldToUpdate = []
+                    isupdate = False
+                    for field in info[website][MINFO].keys():
+                        if not info[website][MINFO][field]:
+                            fieldToUpdate.append(field)
+                            isupdate = True
+                    if isupdate:
+                        update.append((mid, website, fieldToUpdate))
                 else:
-                    update.append((mid,website))
+                    update.append((mid, website, None))
 
         return update
 
@@ -82,9 +92,9 @@ class Mlib(object):
 
     def addMElt(self,mid, website, content, field=None):
         if field:
-            self.Mlib[mid][website][field] = content
+            self.Mlib[mid][website][MINFO][field] = content
         else:
-            self.Mlib[mid][website] = content
+            self.Mlib[mid][website][MINFO] = content
 
     def addMliste(self, mliste, site):
         self.duplicates = []
