@@ -9,6 +9,8 @@ from mfiltre import Mfiltre
 from mlib import Mlib
 from mconfig import *
 from mconstant import *
+from random import randint
+from time import sleep
 
 # constants
 ERRTITLE    = 'title'
@@ -94,7 +96,8 @@ class EasyM(object):
         return mtitles
 
     def mcontent(self, name, mid):
-        url = self.Efilt[name].getUrlContent() + mid + '/'
+        idm_site = self.Elib.getMIdManga(mid, name)
+        url = self.Efilt[name].getUrlContent() + idm_site + '/'
         page = self.Ereq.getRequest(url)
         if not page:
             self.ErrReq.append((name,url,ERRCONTENT))
@@ -106,8 +109,43 @@ class EasyM(object):
 
         return mcontent
 
+    def updateLib(self):
+        update = self.Elib.getIdMToUpdate()
+        updates = []
+        errors = []
+        maxOccurRequest = randint(10, 20)
+        nbRequest = 0
+        t = PAUSE_REQUEST_MIN
+        idm = 0
+        try:
+            idm = 0
+            for ligne in update:
+                (mid, website, field) = ligne
+                print "%d %s %s" % (idm, mid, website)
+                content = self.mcontent(website, mid)
+                if content:
+                    self.Elib.addMElt(mid, website, content)
+                    updates.append(ligne)
+                else:
+                    errors.append(ligne)
+
+                if nbRequest >= maxOccurRequest:
+                    sleep(t)
+                    nbRequest = 0
+                    maxOccurRequest = randint(10, 20)
+                    t = randint(PAUSE_REQUEST_MIN, PAUSE_REQUEST_MAX)
+                else:
+                    nbRequest += 1
+                idm+=1
+        except KeyboardInterrupt:
+            self.Elib.saveLib()
+            return (updates, errors)
+        self.Elib.saveLib()
+        return (updates, errors)
+
     def __str__(self):
-        print self.Mlib
+        print self.Elib
+        return ""
 
 
 def TcreateFileConfig():
@@ -119,9 +157,9 @@ def TcreateFileConfig():
 def TloadTitreToContent():
     m = EasyM()
     a = m.Econf.websites()
-    titles = m.titles(a[0])
-    c = m.mcontent(a[0],titles[43]['id'])
-    print m.Efilt[a[0]]
+    titles = m.titles(a[1])
+    c = m.mcontent(a[1],titles[43]['id'])
+    print m.Efilt[a[1]]
     return c
 
 def TupdateAllTitle():

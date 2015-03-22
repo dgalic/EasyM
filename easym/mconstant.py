@@ -45,6 +45,9 @@ ALLFIELD_MINFO = [  STATUS, AUTHOR, DRAWER, TYPE_M, TAG,
                     RESUME, IMG_URL, SCND_NAME,
                     PARUTION, FR_EDIT, TEAM,
                     READ, CLASSMENT, NOTE]
+PAUSE_REQUEST_MIN = 1
+PAUSE_REQUEST_MAX = 4
+
 
 def encodeUTF8(elt):
     return elt.encode("utf-8")
