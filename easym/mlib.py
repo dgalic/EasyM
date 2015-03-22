@@ -8,6 +8,7 @@
 
 # imports
 from mconstant import *
+from os import path
 
 # constants
 EASY_LIBRARY        = 'libEasyM.txt'
@@ -27,13 +28,17 @@ class Mlib(object):
 
     def initLib(self):
         # test if file EASY_LIBRARY exits
-        if not self.loadLib():
+        if path.exists(EASY_LIBRARY):
+            self.loadLib()
+        else:
+            print "file not exist"
             open(EASY_LIBRARY, "w").close()
+            self.saveLib()
 
     def loadLib(self):
         try:
             f = open(EASY_LIBRARY, "r")
-            sef.Mlib = eval(f.read())
+            self.Mlib = eval(f.read())
             f.close()
         except IOError:
             return False
