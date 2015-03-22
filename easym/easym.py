@@ -71,13 +71,13 @@ class EasyM(object):
         self.Elib = Mlib()
         self.ErrReq = []
         self.ErrFiltre = []
-        pass
+        self.initFiltre()
 
     def initFiltre(self):
-        filtre = self.Econf.websites()
-        if filtre:
-            for elt in filtres:
-                self.Efilt[name] = self.Econf.createFiltre(elt)
+        filtres = self.Econf.websites()
+        if filtres:
+            for name in filtres:
+                self.Efilt[name] = self.Econf.createFiltre(name)
 
     def titles(self, name):
         url = self.Efilt[name].getUrlTitle()
@@ -109,10 +109,11 @@ class EasyM(object):
         print self.elibrairy
 
 
-def createFileConfig():
+def TcreateFileConfig():
     Econf = Mconfig()
     print Econf.addSection("Lecture en ligne", DICO_LE)
     print Econf.addSection("Japscan", DICO_JS)
+    return Econf
 
 def loadAllfiltre(filtres):
     FTitres = []

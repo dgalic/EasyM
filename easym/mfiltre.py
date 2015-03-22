@@ -37,7 +37,7 @@ class Mfiltre(object):
         self.url_prefix = url_prefix
 
     def initContent(self, fieldload, filtre="*"):
-        self.fieldload = fieldload
+        self.fieldload = eval(fieldload)
         self.filtre = filtre
 
     def getUrlTitle(self):
@@ -159,8 +159,7 @@ class Mfiltre(object):
         %s
  Error : %d
 
- """ % (self.name, self.url, self.base_url_title, self.selecteur,
-         self.field, self.base_url_content, self.filtre, fieldload,
-         len(self.errors), str(self.errors))
+ """ % (self.name, self.url, self.base_url_title, self.selecteur, self.field,
+        self.base_url_content, self.filtre, fieldload, len(self.errors))
         return encodeUTF8(info)
 

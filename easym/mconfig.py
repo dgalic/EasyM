@@ -122,18 +122,22 @@ class Mconfig(object):
         #Constant title
         title_select = self.mconfig.get(name, TITLE_SELECT)
         title_field = self.mconfig.get(name, TITLE_FIELD)
-        if self.mconfig.has_option(URL_CUT):
+
+        if self.mconfig.has_option(name, URL_CUT):
             url_cut = self.mconfig.get(name, URL_CUT)
             filtre.initTitle(title_select, title_field, url_cut)
         else:
             filtre.initTitle(title_select, title_field)
+
         #Constant content
         content_select = self.mconfig.get(name, CONTENT_SELECT)
-        if self.mconfig.has_option(CONTENT_FILTRE):
+        if self.mconfig.has_option(name, CONTENT_FILTRE):
             content_filtre = self.mconfig.get(name, CONTENT_FILTRE)
             filtre.initContent(content_select, content_filtre)
         else:
             filtre.initContent(content_select)
+
+        return filtre
 
     def __str__(self):
         website = self.mconfig.sections()
