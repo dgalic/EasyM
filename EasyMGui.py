@@ -12,9 +12,9 @@ class EasyMGUI(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.parent = parent
-        self.initUI()
+        self.initGUI()
 
-    def initUI(self):
+    def initGUI(self):
         self.initMenuBar()
         self.frame = self.initFrameVote()
 
