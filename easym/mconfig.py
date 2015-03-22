@@ -87,14 +87,14 @@ class Mconfig(object):
             length = len(elt)
             field_test = []
             if length == 3:
-                field = elt[2]
+                arg = elt[2]
                 if typ == TYPE_TABLE:
-                    for k,v in field.items():
-                        if not v in ALLFIELD_MINFO:
-                            print 'Field %s not exist to MINFO' % (v)
+                    for (pos, field_lib, pattern) in arg:
+                        if not field_lib in ALLFIELD_MINFO:
+                            print 'Field %s not exist to MINFO' % (field_lib)
                             return False
                 else:
-                    if not field in ALLFIELD_MINFO:
+                    if not arg in ALLFIELD_MINFO:
                         print  'field %s not exist to MINFO' % (field)
                         return False
             else:
