@@ -18,12 +18,12 @@ ERRCONTENT  = 'content'
 ## LECTURE EN LIGNE
 URL_LE = 'http://www.lecture-en-ligne.com'
 #### CONTENT
-LOAD_LE                 =  {
-        0 : SCND_NAME, 1 : PARUTION , 2 : STATUS   ,
-        3 : AUTHOR   , 4 : DRAWER   , 5 : FR_EDIT  ,
-        6 : TEAM     , 7 : GENRE    , 8 : READ     ,
-        9 : CLASSMENT, 11 : NOTE    }
-
+LOAD_LE                 =  [
+        (0,SCND_NAME,None), (1,PARUTION,None) , (2,STATUS,None),
+        (3,AUTHOR,None), (4,DRAWER,None), (5,FR_EDIT,None),
+        (6,TEAM,None), (7,TAG,"(.*)\(") , (7,TYPE_M,"\((.*)\)"),
+        (8,READ,None), (9,CLASSMENT,None), (11,NOTE,None)
+                            ]
 CONTENT_LOAD_LE         = [
         [TYPE_TABLE , '.infos tbody tr td'  , LOAD_LE],
         [TYPE_ATTRS , ('.imagemanga','src') , IMG_URL],
@@ -44,9 +44,10 @@ DICO_LE ={
 ## JAPSCAN
 URL_JS = 'http://www.japscan.com'
 #### CONTENT
-LOAD_JS                 =  {
-        0 : AUTHOR, 1 : SCND_NAME , 2 : PARUTION   ,
-        3 : GENRE   , 4 : TEAM , 5 : STATUS  }
+LOAD_JS                 =  [
+        (0,AUTHOR,None), (1,SCND_NAME,None) , (2,PARUTION,None),
+        (3,TYPE_M,None), (4,TEAM,None), (5,STATUS,None)
+                            ]
 CONTENT_LOAD_JS         = [
         [TYPE_TABLE , '#synopsis'           , LOAD_JS],
         [TYPE_TEXT  , '.table .row .cell'   , RESUME ]]
@@ -94,7 +95,7 @@ class EasyM(object):
 
     def mcontent(self, name, mid):
         url = self.Efilt[name].getUrlContent() + mid + '/'
-        page = self.mreq.getRequest(url)
+        page = self.Ereq.getRequest(url)
         if not page:
             self.ErrReq.append((name,url,ERRCONTENT))
             return None
@@ -114,6 +115,15 @@ def TcreateFileConfig():
     print Econf.addSection("Lecture en ligne", DICO_LE)
     print Econf.addSection("Japscan", DICO_JS)
     return Econf
+
+def test():
+    m = EasyM()
+    a = m.Econf.websites()
+    titles = m.titles(a[0])
+    c = m.mcontent(a[0],titles[43]['id'])
+    print m.Efilt[a[0]]
+    return c
+
 
 def loadAllfiltre(filtres):
     FTitres = []
