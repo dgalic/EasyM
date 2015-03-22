@@ -62,42 +62,51 @@ class Mlib(object):
             - field in MINFO : to return change code in website
         """
         update = []
-        for mid, info in self.Mlib():
+        for mid, info in self.Mlib.items():
             for website in info.keys():
-                if not info[website][INFO]:
-                    update.append((mid,website))
-                else:
+                if info[website][INFO]:
                     for field in info[website][INFO].keys():
                         if not info[website][INFO][field]:
                             update.append((mid,website,field))
+                else:
+                    update.append((mid,website))
 
         return update
 
+    def compare(self, old, new):
+        if not new:
+            return old
+        return new
+
+    def addMElt(self,mid, website, content, field=None):
+        if field:
+            self.Mlib[mid][website][field] = content
+        else:
+            self.Mlib[mid][website] = content
+
     def addMliste(mliste, site):
-        self.duplicate = []
-        self.update = []
-        for m in mliste:
-            keyname = formatName(m[MNAME])
+        self.duplicates = []
+        self.updates = []
+        for manga in mliste:
+            keyname = formatName(manga[MNAME])
             if keyname in self.Mlib:
-                if not site in self.Mlib[keyname]:
-                    print keyname
-                    self.Mlib[keyname][site] = m
+                if site in self.Mlib[keyname]:
+                    old_manga = self.Mlib[keyname][site]
+                    self.Mlib[keyname][site] = self.compare(old_manga,manga)
                 else:
-                    # TODO dans le cas d'update les données
-                    self.duplicate.append(m[MNAME])
-                    continue
+                    self.Mlib[keyname][site] = manga
             else:
-                print keyname
-                lib[keyname][site] = m
+                self.Mlib[keyname][site] = manga
 
     def __str__(self):
-        nbM = len(self.lib)
+        nbM = len(self.Mlib)
+        nbDup = len(self.duplicates)
+        nbUp = len(self.updates)
         ## Information on Lib
         info = u"""
  Nombre de manga : %d
-    Erreurs      : %d
     Duplication  : %d
     Update       : %d
- """ % (nbM, nbErr, nbDup, nbUpdate)
+ """ % (nbM, nbDup, nbUp)
         return encodeUTF8(info)
 
