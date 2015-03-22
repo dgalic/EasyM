@@ -9,6 +9,8 @@
 # imports
 from mconstant import *
 from os import path
+from unidecode import unidecode
+import re
 
 # constants
 EASY_LIBRARY        = 'libEasyM.txt'
@@ -84,7 +86,7 @@ class Mlib(object):
         else:
             self.Mlib[mid][website] = content
 
-    def addMliste(mliste, site):
+    def addMliste(self, mliste, site):
         self.duplicates = []
         self.updates = []
         for manga in mliste:
@@ -96,7 +98,8 @@ class Mlib(object):
                 else:
                     self.Mlib[keyname][site] = manga
             else:
-                self.Mlib[keyname][site] = manga
+                self.Mlib[keyname] = {site : manga}
+        self.saveLib()
 
     def __str__(self):
         nbM = len(self.Mlib)

@@ -93,8 +93,6 @@ class Mfiltre(object):
             value = None
             if position < length:
                 if pattern:
-                    print pattern
-                    print ligne[position]
                     result = re.search(pattern, ligne[position])
                     value = result.group(1)
                 else:

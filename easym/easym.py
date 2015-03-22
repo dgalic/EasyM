@@ -56,7 +56,7 @@ DICO_JS ={
         URL             : URL_JS,
         URL_TITLE       : URL_JS + '/mangas/',
         URL_CONTENT     : URL_JS + '/mangas/',
-        URL_CUT         : '/manga/',
+        URL_CUT         : '/mangas/',
         TITLE_SELECT    : '#liste_mangas .row .cell a[href^="/mangas/"]',
         TITLE_FIELD     : 'href',
         CONTENT_SELECT  : CONTENT_LOAD_JS,
@@ -107,7 +107,7 @@ class EasyM(object):
         return mcontent
 
     def __str__(self):
-        print self.elibrairy
+        print self.Mlib
 
 
 def TcreateFileConfig():
@@ -116,13 +116,24 @@ def TcreateFileConfig():
     print Econf.addSection("Japscan", DICO_JS)
     return Econf
 
-def test():
+def TloadTitreToContent():
     m = EasyM()
     a = m.Econf.websites()
     titles = m.titles(a[0])
     c = m.mcontent(a[0],titles[43]['id'])
     print m.Efilt[a[0]]
     return c
+
+def TupdateAllTitle():
+    m = EasyM()
+    websites = m.Econf.websites()
+    for site in websites:
+        print site
+        mtitre = []
+        mtitre = m.titles(site)
+        if mtitre:
+            m.Elib.addMliste(mtitre, site)
+    return m
 
 
 def loadAllfiltre(filtres):
