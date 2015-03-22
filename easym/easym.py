@@ -4,9 +4,9 @@
 """module docstring"""
 
 # imports
-from mrequest import Mrequest as mreqq
-from mfiltre import Mfiltre as mfilt
-from mlib import Mlib as mlib
+from mrequest import Mrequest
+from mfiltre import Mfiltre
+from mlib import Mlib
 from mconfig import *
 from mconstant import *
 
@@ -31,6 +31,7 @@ CONTENT_LOAD_LE         = [
         ]
 
 DICO_LE ={
+        URL             : URL_LE,
         URL_TITLE       : URL_LE,
         URL_CONTENT     : URL_LE + '/manga/',
         URL_CUT         : URL_LE + '/manga/',
@@ -51,6 +52,7 @@ CONTENT_LOAD_JS         = [
         [TYPE_TEXT  , '.table .row .cell'   , RESUME ]]
 
 DICO_JS ={
+        URL             : URL_JS,
         URL_TITLE       : URL_JS + '/mangas/',
         URL_CONTENT     : URL_JS + '/mangas/',
         URL_CUT         : '/manga/',
@@ -106,6 +108,11 @@ class EasyM(object):
     def __str__(self):
         print self.elibrairy
 
+
+def createFileConfig():
+    Econf = Mconfig()
+    print Econf.addSection("Lecture en ligne", DICO_LE)
+    print Econf.addSection("Japscan", DICO_JS)
 
 def loadAllfiltre(filtres):
     FTitres = []

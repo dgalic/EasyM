@@ -22,7 +22,8 @@ ERR_POS_TABLE   = 'table'
 
 class Mfiltre(object):
 
-    def __init__(self, url):
+    def __init__(self, name, url):
+        self.name = name
         self.url = url
         self.errors = []
 
@@ -147,6 +148,7 @@ class Mfiltre(object):
 
         ## Information on filtre web site
         info = u"""
+ Nom : %s
  Url : %s
  Title : %s
     Selecteur : %s
@@ -157,8 +159,8 @@ class Mfiltre(object):
         %s
  Error : %d
 
- """ % (self.url, self.base_url_title, self.selecteur, self.field,
-         self.base_url_content, self.filtre, fieldload,
+ """ % (self.name, self.url, self.base_url_title, self.selecteur,
+         self.field, self.base_url_content, self.filtre, fieldload,
          len(self.errors), str(self.errors))
         return encodeUTF8(info)
 

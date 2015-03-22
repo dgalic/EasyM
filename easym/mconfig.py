@@ -13,6 +13,7 @@ from mconstant import *
 
 # constants
 CONFIG_FILE     = 'mconfig.cfg'
+URL             = 'url'
 URL_TITLE       = 'title'
 URL_CONTENT     = 'content'
 URL_CUT         = 'url_cut'
@@ -21,7 +22,7 @@ TITLE_FIELD     = 'title_field'
 CONTENT_SELECT  = 'content_allselect'
 CONTENT_FILTRE  = 'content_filtre'
 ALLFIELD_NECESSITY = [
-        URL_TITLE, URL_CONTENT,
+        URL, URL_TITLE, URL_CONTENT,
         TITLE_SELECT,TITLE_FIELD,
         CONTENT_SELECT]
 
@@ -44,9 +45,9 @@ class Mconfig(object):
     # Save your mconfig in file name CONFIG_FILE
     def saveConfig(self):
         try:
-           f_mconfig = open(EASY_CONFIG, "wb")
+           f_mconfig = open(CONFIG_FILE, "wb")
            self.mconfig.write(f_mconfig)
-           f.close(f_mconfig)
+           f_mconfig.close()
         except IOError:
             return False
         return True
@@ -106,13 +107,14 @@ class Mconfig(object):
     def addSection(self, name, content):
         if self.isMfiltre(name, content):
             self.mconfig.add_section(name)
-            for option,value in content.keys():
+            for option,value in content.items():
                 self.mconfig.set(name, option, value)
             return self.saveConfig()
         return False
 
     def createFiltre(self, name):
-        filtre = mfiltre(name)
+        url  = self.mconfig.get(name, URL)
+        filtre = mfiltre(name, URL)
         #Constant url
         url_title = self.mconfig.get(name, URL_TITLE)
         url_content = self.mconfig.get(name, URL_CONTENT)
