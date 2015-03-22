@@ -47,18 +47,18 @@ class Mfiltre(object):
         return self.base_url_content
 
     def mTitleContent(self, mpage):
-            ## catch name and identifier
-            name = mpage.text
-            url = mpage.attrs[self.field]
-            result = re.match(self.url_prefix + "(.*)/", url)
-            mid = result.group(1)
-            return (name, mid)
+        ## catch name and identifier
+        name = mpage.text
+        url = mpage.attrs[self.field]
+        result = re.match(self.url_prefix + "(.*)/", url)
+        mid = result.group(1)
+        return (name, mid)
 
     def mTitle(self, content):
         """ retourne une liste d'element (titre, web site id, info -> none) """
         soup = BeautifulSoup(content.text)
         ## keep only inforamtion necessary information with selecteur
-        pageFiltre = self.select(self.selecteur)
+        pageFiltre = soup.select(self.selecteur)
         if not pageFiltre:
             self.errors.apprend((ERR_TITLE, ERR_POS_FILTRE))
             return None
@@ -72,38 +72,46 @@ class Mfiltre(object):
 
         return lmanga
 
-    def selectElt(self, filtre):
+    def selectElt(self, page, filtre):
         try:
             ret = page.select(filtre)[0]
         except IndexError: # erreurs aucun élement selectionné
             return None
         return ret
 
-    def mTableContent(self, page, select, field):
-        EltFiltre = self.select(select)
-        if not pageFiltre:
+    def mTableContent(self, page, select, fields):
+        EltFiltre = page.select(select)
+        if not EltFiltre:
             self.errors.apprend((ERR_CONTENT, ERR_POS_TABLE))
             return None
 
         ligne = [i.text for i in EltFiltre]
         length = len(ligne)
-        for position, field_librairy in field.items():
+        dico = {}
+        for field in fields:
+            (position, field_librairy, pattern) = field
             value = None
             if position < length:
-                value = ligne[position]
-            dico[field_librairy] = value
+                if pattern:
+                    print pattern
+                    print ligne[position]
+                    result = re.search(pattern, ligne[position])
+                    value = result.group(1)
+                else:
+                    value = ligne[position]
+                dico[field_librairy] = value
 
         return dico
 
     def mEltAttrs(self, page, select, field):
-        EltFiltre = self.select(select)
-        if not pageFiltre:
+        EltFiltre = self.selectElt(page, select)
+        if not EltFiltre:
             self.errors.apprend((ERR_CONTENT, ERR_POS_ATTRS))
             return None
         return EltFiltre.attrs[field]
 
     def mText(self, page, select):
-        pageFiltre = self.select(select)
+        pageFiltre = self.selectElt(page, select)
         if not pageFiltre:
             self.errors.apprend((ERR_CONTENT, ERR_POS_TEXT))
             return None
@@ -118,7 +126,7 @@ class Mfiltre(object):
         soup = BeautifulSoup(content.text)
 
         # Filtre possible pour travailler sur un ensemble plus petit
-        pageFiltre = self.select(select)
+        pageFiltre = self.selectElt(soup,self.filtre)
         if not pageFiltre:
             self.errors.apprend((ERR_CONTENT, ERR_POS_FILTRE))
             return None
