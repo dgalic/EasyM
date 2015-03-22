@@ -24,10 +24,11 @@ MID = 'id'
 MINFO = 'information'
 #### Dictionnary VALUE : MINFO
 ### FIED to MINFO
-STATUS      = 'status'  # ENCOURS , TERMINER, ONESHOT, PAUSE, ABANDONNE
+STATUS      = 'status'  ## ENCOURS , TERMINER, ONESHOT, PAUSE, ABANDONNE
 AUTHOR      = 'author'  ## FORMAT
 DRAWER      = 'drawer'  ## FORMAT
-GENRE       = 'genre'   ## TAG | Shōjo Shōnen Josei Seinen
+TYPE_M      = 'type'    ## Shōjo Shōnen Josei Seinen ect
+TAG         = 'tag'     ## TAG mots clée du manga
 RESUME      = 'resume'  ## TEXT
 
 ## Un plus
@@ -40,7 +41,7 @@ READ        = 'read'
 CLASSMENT   = 'classment'
 NOTE        = 'note'
 
-ALLFIELD_MINFO = [  STATUS, AUTHOR, DRAWER, GENRE,
+ALLFIELD_MINFO = [  STATUS, AUTHOR, DRAWER, TYPE_M, TAG,
                     RESUME, IMG_URL, SCND_NAME,
                     PARUTION, FR_EDIT, TEAM,
                     READ, CLASSMENT, NOTE]
