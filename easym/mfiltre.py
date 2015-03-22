@@ -60,7 +60,7 @@ class Mfiltre(object):
         ## keep only inforamtion necessary information with selecteur
         pageFiltre = soup.select(self.selecteur)
         if not pageFiltre:
-            self.errors.apprend((ERR_TITLE, ERR_POS_FILTRE))
+            self.errors.append((ERR_TITLE, ERR_POS_FILTRE))
             return None
         titles = pageFiltre
 
@@ -82,7 +82,7 @@ class Mfiltre(object):
     def mTableContent(self, page, select, fields):
         EltFiltre = page.select(select)
         if not EltFiltre:
-            self.errors.apprend((ERR_CONTENT, ERR_POS_TABLE))
+            self.errors.append((ERR_CONTENT, ERR_POS_TABLE))
             return None
 
         ligne = [i.text for i in EltFiltre]
@@ -104,14 +104,14 @@ class Mfiltre(object):
     def mEltAttrs(self, page, select, field):
         EltFiltre = self.selectElt(page, select)
         if not EltFiltre:
-            self.errors.apprend((ERR_CONTENT, ERR_POS_ATTRS))
+            self.errors.append((ERR_CONTENT, ERR_POS_ATTRS))
             return None
         return EltFiltre.attrs[field]
 
     def mText(self, page, select):
         pageFiltre = self.selectElt(page, select)
         if not pageFiltre:
-            self.errors.apprend((ERR_CONTENT, ERR_POS_TEXT))
+            self.errors.append((ERR_CONTENT, ERR_POS_TEXT))
             return None
         return pageFiltre.text
 
@@ -126,7 +126,7 @@ class Mfiltre(object):
         # Filtre possible pour travailler sur un ensemble plus petit
         pageFiltre = self.selectElt(soup,self.filtre)
         if not pageFiltre:
-            self.errors.apprend((ERR_CONTENT, ERR_POS_FILTRE))
+            self.errors.append((ERR_CONTENT, ERR_POS_FILTRE))
             return None
         page = pageFiltre
 
@@ -143,7 +143,8 @@ class Mfiltre(object):
 
             if elt[0] == TYPE_TABLE:
                 table = self.mTableContent(page, elt[1], elt[2])
-                dico.update(table)
+                if table:
+                    dico.update(table)
 
         return dico
 
