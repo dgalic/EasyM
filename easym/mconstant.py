@@ -52,3 +52,25 @@ PAUSE_REQUEST_MAX = 4
 def encodeUTF8(elt):
     return elt.encode("utf-8")
 
+def getInfoM(name, mid ,minfo):
+    info = u"""
+ Titre : %s
+ Identifiant : %s
+ Status : %s
+ Type : %s
+ Titre secondaire : %s
+ Auteur : %s
+ Dessinateur : %s
+ Editeur français : %s
+ Parution : %s
+ Team : %s
+ Sens de lecture : %s
+ Classement : %s
+ Note : %s
+ Tag : %s
+ Resumé :
+     %s
+     """ % (name, mid, minfo[STATUS], minfo[TYPE_M], minfo[SCND_NAME],
+            minfo[AUTHOR], minfo[DRAWER], minfo[FR_EDIT], minfo[PARUTION], minfo[TEAM],
+            minfo[READ], minfo[CLASSMENT], minfo[NOTE] ,minfo[TAG], minfo[RESUME])
+    return encodeUTF8(info)
