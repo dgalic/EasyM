@@ -15,7 +15,8 @@ TYPE_ATTRS          = 'attrs'
 
 ### Dictianary for MANGA
 ## KEY url site
-MALL = "EASYM"
+MALL = "EASYM"  # all information formaté
+MVOTER = "VOTER" # 3 liste
 
 ## VALUE Information in this site
 MNAME = 'name'
@@ -45,6 +46,21 @@ ALLFIELD_MINFO = [  STATUS, AUTHOR, DRAWER, TYPE_M, TAG,
                     RESUME, IMG_URL, SCND_NAME,
                     PARUTION, FR_EDIT, TEAM,
                     READ, CLASSMENT, NOTE]
+
+TITRE_FIELD = { STATUS      : u'Status :',
+                AUTHOR      : u'Auteur :',
+                DRAWER      : u'Desinateur :',
+                TYPE_M      : u'Type :',
+                TAG         : u'Tag :',
+                RESUME      : u'Resumé :\n',
+                SCND_NAME   : u'Titre secondaire :',
+                PARUTION    : u'Année de parution :',
+                FR_EDIT     : u'Editeur français :',
+                TEAM        : u'Team :',
+                READ        : u'Sens de lecture:',
+                CLASSMENT   : u'Classement :',
+                NOTE        : u'Note :'
+            }
 PAUSE_REQUEST_MIN = 1
 PAUSE_REQUEST_MAX = 4
 
@@ -52,25 +68,27 @@ PAUSE_REQUEST_MAX = 4
 def encodeUTF8(elt):
     return elt.encode("utf-8")
 
+def addText(minfo, field):
+    if field in minfo and minfo[field] != None:
+        return u"%s %s\n" %(TITRE_FIELD[field],minfo[field])
+    return u""
+
 def getInfoM(name, mid ,minfo):
+    text = u""
+    text = text + addText(minfo, STATUS)
+    text = text + addText(minfo, TYPE_M)
+    text = text + addText(minfo, SCND_NAME)
+    text = text + addText(minfo, AUTHOR)
+    text = text + addText(minfo, DRAWER)
+    text = text + addText(minfo, FR_EDIT)
+    text = text + addText(minfo, PARUTION)
+    text = text + addText(minfo, TEAM)
+    text = text + addText(minfo, READ)
+    text = text + addText(minfo, NOTE)
+    text = text + addText(minfo, TAG)
+    text = text + addText(minfo, RESUME)
     info = u"""
  Titre : %s
  Identifiant : %s
- Status : %s
- Type : %s
- Titre secondaire : %s
- Auteur : %s
- Dessinateur : %s
- Editeur français : %s
- Parution : %s
- Team : %s
- Sens de lecture : %s
- Classement : %s
- Note : %s
- Tag : %s
- Resumé :
-     %s
-     """ % (name, mid, minfo[STATUS], minfo[TYPE_M], minfo[SCND_NAME],
-            minfo[AUTHOR], minfo[DRAWER], minfo[FR_EDIT], minfo[PARUTION], minfo[TEAM],
-            minfo[READ], minfo[CLASSMENT], minfo[NOTE] ,minfo[TAG], minfo[RESUME])
+%s""" % (name, mid, text)
     return encodeUTF8(info)

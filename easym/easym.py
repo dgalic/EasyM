@@ -75,6 +75,13 @@ class EasyM(object):
         self.ErrReq = []
         self.ErrFiltre = []
         self.initFiltre()
+        self.initVoter()
+
+    def initVoter(self):
+        voter = self.Elib.getVoterInfo()
+        self.like = voter[0]
+        self.dontlike = voter[1]
+        self.othervoter = voter[2]
 
     def initFiltre(self):
         filtres = self.Econf.websites()
@@ -144,6 +151,21 @@ class EasyM(object):
             return (updates, errors)
         self.Elib.saveLib()
         return (updates, errors)
+
+    def getInfoManga(self, m_id, website):
+        mname = self.Elib.getMNameManga(m_id, website)
+        mid = self.Elib.getMIdManga(m_id, website)
+        minfo = self.Elib.getMInfoManga(m_id, website)
+        return getInfoM(mname, mid, minfo)
+
+    def getAllInfoManga(self, m_id):
+        website = self.Elib.getMsites(m_id)
+        text = ""
+        for site in website:
+            textw = self.getInfoManga(m_id,site)
+            text= "Website : %s \n%s" %(site,textw)
+        return text
+
 
     def __str__(self):
         info_lib = self.Elib.__str__()

@@ -57,8 +57,14 @@ class Mlib(object):
             return False
         return True
 
+    def getVoterInfo(self):
+        return self.Mlib[MVOTER]
+
     def getIdMangas(self):
         return self.Mlib.keys()
+
+    def getMsites(self, mid):
+        return self.Mlib[mid].keys()
 
     def getMIdManga(self, mid, website):
         return self.Mlib[mid][website][MID]
