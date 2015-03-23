@@ -63,7 +63,13 @@ class Mlib(object):
     def getMIdManga(self, mid, website):
         return self.Mlib[mid][website][MID]
 
-    def getIdMToUpdate(self):
+    def getMNameManga(self, mid, website):
+        return self.Mlib[mid][website][MNAME]
+
+    def getMInfoManga(self, mid, website):
+        return self.Mlib[mid][website][MINFO]
+
+    def getMIdToUpdate(self):
         """ we look for all manga id if we miss:
             - information in value MINFO
             - field in MINFO : to return change code in website
@@ -113,13 +119,7 @@ class Mlib(object):
 
     def __str__(self):
         nbM = len(self.Mlib)
-        nbDup = len(self.duplicates)
-        nbUp = len(self.updates)
         ## Information on Lib
-        info = u"""
- Nombre de manga : %d
-    Duplication  : %d
-    Update       : %d
- """ % (nbM, nbDup, nbUp)
+        info = u""" Nombre de manga : %d  """ % (nbM)
         return encodeUTF8(info)
 
