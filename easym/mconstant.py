@@ -16,7 +16,7 @@ TYPE_ATTRS          = 'attrs'
 ### Dictianary for MANGA
 ## KEY url site
 MALL = "EASYM"  # all information formaté
-MVOTER = "VOTER" # 3 liste
+MVOTER = 'VOTER' # 3 liste
 
 ## VALUE Information in this site
 MNAME = 'name'

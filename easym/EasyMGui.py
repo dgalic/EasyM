@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from Tkinter import *
-from tkMessageBox import *
+#from tkMessageBox import *
+from easym import EasyM
+from mconstant import *
+from random import randint
 
 def alert():
     showinfo("alerte", "Bravo!")
@@ -12,6 +15,7 @@ class EasyMGUI(Frame):
     def __init__(self, parent):
         Frame.__init__(self, parent)
         self.parent = parent
+        self.easym = EasyM()
         self.initGUI()
 
     def initGUI(self):
@@ -51,16 +55,53 @@ class EasyMGUI(Frame):
         FrameVote = Frame(self.parent, borderwidth=2)
 
         # Affichage d'un manga
-        Canvas(FrameVote, width=250, height=100, bg='ivory').pack(side=TOP, padx=5, pady=5)
+        self.initFrameInfo(FrameVote)
 
+        Framebutton = Frame(FrameVote, borderwidth=2)
         # Boutons pour les avis sur les mangas
-        boui = Button(FrameVote, text = 'Oui',bg='green',activebackground='lawn green')
+        boui = Button(Framebutton, text = 'Oui',bg='green',
+                activebackground='lawn green',command=self.eventVoter)
         boui.pack(side=LEFT, padx=5,pady=5)
-        bnon = Button(FrameVote, text = 'Non', bg='red',activebackground='orange red')
+        bnon = Button(Framebutton, text = 'Non', bg='red',
+                activebackground='orange red',command=self.eventVoter)
         bnon.pack(side=RIGHT, padx=5, pady=5)
-        Button(FrameVote, text = '>>> Suivant >>>').pack(side=BOTTOM, padx=5, pady=5)
+        suivant = Button(Framebutton, text = '>>> Suivant >>>',
+                command=self.eventVoter)
+        suivant.pack(side=BOTTOM, padx=5, pady=5)
+        Framebutton.pack()
         FrameVote.pack()
         return FrameVote
+
+    def addLabel(self, parent, minfo, field):
+        if field in minfo and minfo[field] != None:
+            Ltext = u"%s %s" %(TITRE_FIELD[field],minfo[field])
+            w = Label(parent, text=Ltext,justify=LEFT)
+            w.pack()
+
+    def initFrameInfo(self,parent):
+        # Affichage d'un manga
+        self.FrameInfo = Frame(parent, relief=RAISED,width=300,borderwidth=2)
+
+        liste = Listbox(self.FrameInfo)
+        randvalue = randint(0, len(self.easym.othervoter))
+        idm = self.easym.othervoter[randvalue]
+        manga = self.easym.Elib.Mlib[idm]
+        for site in manga:
+            minfo = manga[site][MINFO]
+            liste.insert(1, "Website :"+site)
+            liste.insert(2,self.addLabel(parent, minfo, STATUS))
+            liste.insert(3,self.addLabel(parent, minfo, TYPE_M))
+            liste.insert(4,self.addLabel(parent, minfo, SCND_NAME))
+            liste.insert(5,self.addLabel(parent, minfo, AUTHOR))
+            liste.insert(6,self.addLabel(parent, minfo, DRAWER))
+            liste.insert(7,self.addLabel(parent, minfo, FR_EDIT))
+            liste.insert(8,self.addLabel(parent, minfo, PARUTION))
+            liste.insert(9,self.addLabel(parent, minfo, TEAM))
+            liste.insert(10,self.addLabel(parent, minfo, READ))
+            liste.insert(11,self.addLabel(parent, minfo, NOTE))
+            liste.insert(12,self.addLabel(parent, minfo, TAG))
+            #liste.insert(13,self.addLabel(parent, minfo, RESUME))
+        self.FrameInfo.pack(fill=BOTH,side=TOP )
 
     def initFrameAddListM(self):
         FrameListeM = Frame(self.parent, borderwidth=2)
@@ -75,7 +116,6 @@ class EasyMGUI(Frame):
         liste.pack()
         FrameListeM.pack()
         return FrameListeM
-
 
 def main():
     root = Tk()
