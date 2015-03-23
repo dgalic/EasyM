@@ -110,7 +110,9 @@ class EasyM(object):
         return mcontent
 
     def updateLib(self):
-        update = self.Elib.getIdMToUpdate()
+        self.ErrReq = []
+        self.ErrFiltre = []
+        update = self.Elib.getMIdToUpdate()
         updates = []
         errors = []
         maxOccurRequest = randint(10, 20)
@@ -144,8 +146,14 @@ class EasyM(object):
         return (updates, errors)
 
     def __str__(self):
-        print self.Elib
-        return ""
+        info_lib = self.Elib.__str__()
+        nb_ReqErr = len(self.ErrReq)
+        nb_FiltErr = len(self.ErrFiltre)
+        info_err = """
+  Erreurs de requete : %d
+  Erreurs de Filtre : %d
+        """ % (nb_ReqErr, nb_FiltErr)
+        return info_lib + info_err
 
 
 def TcreateFileConfig():
@@ -172,38 +180,5 @@ def TupdateAllTitle():
         if mtitre:
             m.Elib.addMliste(mtitre, site)
     return m
-
-
-def loadAllfiltre(filtres):
-    FTitres = []
-
-    for f in filtres:
-        FTitres.append(loadfiltre(f))
-
-    error = []
-    maxOccurRequest = randint(10, 20)
-    nbRequest = 0
-    t = PAUSE_REQUEST_MIN
-    idm = 0
-    for m in titlesLE:
-        info = testContentM_LE(m[MID])
-        if not info:
-            error.append(m[MNAME])
-        else:
-            print m[MNAME] + " : %d" %(idm)
-
-        m[MINFO] = info
-
-        if nbRequest >= maxOccurRequest:
-            print "*** Sleep %d" % (t)
-            sleep(t)
-            nbRequest = 0
-            maxOccurRequest = randint(10, 20)
-            t = randint(PAUSE_REQUEST_MIN, PAUSE_REQUEST_MAX)
-        else:
-            nbRequest += 1
-        idm+=1
-    return (titlesLE, error)
-
 
 #if __name__ == '__main__':
